@@ -1,0 +1,8 @@
+{
+  "node": true,
+  "laxcomma": true,
+  "globals": {
+  	"it": true,
+  	"describe": true
+  }
+}
