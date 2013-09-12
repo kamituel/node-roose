@@ -1,11 +1,11 @@
 {
   "name": "node-redis-oose",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Save/retrieve objects from Redis.",
   "main": "lib/index.js",
   "scripts": {
     "test": "DEBUG=roose ./node_modules/.bin/mocha --harmony-generators --harmony spec/",
-    "cov": "jscoverage lib lib-cov/ && ROOSE_COV=1 ./node_modules/.bin/mocha --harmony-generators --harmony --reporter html-cov spec/ > coverage.html"
+    "cov": "rm -rf lib-cov/ && jscoverage lib lib-cov/ && ROOSE_COV=1 ./node_modules/.bin/mocha --harmony-generators --harmony --reporter html-cov spec/ > coverage.html"
   },
   "author": "kamituel@gmail.com",
   "license": "BSD",
