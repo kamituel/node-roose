@@ -14,11 +14,11 @@ var expect = require('chai').expect
 describe('Redis-oose tests:', function () {
 
 	var Vehicle = new Roose.Model('vehicle', {
-		'manufacturer': String,
-		'model': String,
-		'$date_of_production': Number,
-		'$production_line': String,
-		'colors': [String]
+		'$manufacturer': String,
+		'$model': String,
+		'date_of_production': Number,
+		'colors': [String],
+		'wheels': [Number]
 	});
 
 	describe('Invalid models', function () {
@@ -52,8 +52,8 @@ describe('Redis-oose tests:', function () {
 			'manufacturer': 'Tesla',
 			'model': 'Model S',
 			'date_of_production': new Date().getTime(),
-			'production_line': 'X2CDHA3',
-			'colors': ['red', 'green', 'blue']
+			'colors': ['red', 'green', 'blue'],
+			'wheels': [1, 2, 3, 4]
 		});
 
 		it('Saves', function (done) {
@@ -62,8 +62,8 @@ describe('Redis-oose tests:', function () {
 				expect(teslaSaved.manufacturer).to.equal(tesla.manufacturer);
 				expect(teslaSaved.model).to.equal(tesla.model);
 				expect(teslaSaved.date_of_production).to.equal(tesla.date_of_production);
-				expect(teslaSaved.production_line).to.equal(tesla.production_line);
 				expect(teslaSaved.colors.sort()).to.deep.equal(tesla.colors.sort());
+				expect(teslaSaved.wheels.sort()).to.deep.equal(tesla.wheels.sort());
 				done();
 			});
 		});
@@ -71,15 +71,15 @@ describe('Redis-oose tests:', function () {
 		it('Gets', function (done) {
 			Q.spawn(function* () {
 				var teslaRead = yield Vehicle.get({
-					date_of_production: tesla.date_of_production,
-					production_line: tesla.production_line
+					manufacturer: tesla.manufacturer,
+					model: tesla.model
 				});
 
 				expect(teslaRead.manufacturer).to.equal(tesla.manufacturer);
 				expect(teslaRead.model).to.equal(tesla.model);
 				expect(teslaRead.date_of_production).to.equal(tesla.date_of_production);
-				expect(teslaRead.production_line).to.equal(tesla.production_line);
 				expect(teslaRead.colors.sort()).to.deep.equal(tesla.colors.sort());
+				expect(teslaRead.wheels.sort()).to.deep.equal(tesla.wheels.sort());
 				done();
 			});
 		});
@@ -87,8 +87,8 @@ describe('Redis-oose tests:', function () {
 		it('Removes', function (done) {
 			Q.spawn(function* () {
 				var id = {
-					date_of_production: tesla.date_of_production,
-					production_line: tesla.production_line
+					manufacturer: tesla.manufacturer,
+					model: tesla.model
 				};
 
 				var teslaRead = yield Vehicle.get(id);
@@ -110,13 +110,13 @@ describe('Redis-oose tests:', function () {
 			'manufacturer': 'Mercedes',
 			'model': 'SLS',
 			'date_of_production': new Date().getTime(),
-			'production_line': '76',
-			'colors': ['#ff0000', '#ffffff']	
+			'colors': ['#ff0000', '#ffffff'],
+			'wheels': [5, 6, 7, 8]
 		});
 
 		var id = {
-			date_of_production: mercedes.date_of_production,
-			production_line: mercedes.production_line
+			manufacturer: mercedes.manufacturer,
+			model: mercedes.model
 		};
 
 		it('Saves with PX', function (done) {
@@ -136,9 +136,8 @@ describe('Redis-oose tests:', function () {
 				expect(mercedesRead.manufacturer).to.equal(mercedes.manufacturer);
 				expect(mercedesRead.model).to.equal(mercedes.model);
 				expect(mercedesRead.date_of_production).to.equal(mercedes.date_of_production);
-				expect(mercedesRead.production_line).to.equal(mercedes.production_line);
-				console.log('actual', mercedesRead.colors, 'expected', mercedes.colors);
 				expect(mercedesRead.colors.sort()).to.deep.equal(mercedes.colors.sort());
+				expect(mercedesRead.wheels.sort()).to.deep.equal(mercedes.wheels.sort());
 
 				done();
 			});

@@ -1,5 +1,5 @@
 {
-  "name": "node-roose",
+  "name": "roose",
   "version": "0.0.3",
   "description": "Extremely simple, promise based Redis object modeling tool.",
   "keywords": ["redis", "document", "model", "schema", "database", "odm", "data", "datastore", "nosql", "orm", "db"],
