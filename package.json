@@ -1,6 +1,6 @@
 {
   "name": "roose",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Extremely simple, promise based Redis object modeling tool.",
   "keywords": [
     "redis",
