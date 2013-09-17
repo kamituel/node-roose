@@ -10,22 +10,21 @@ var expect = require('chai').expect
 	, Q = require('q')
 	;
 
-
 describe('Redis-oose tests:', function () {
 
 	var Vehicle = new Roose.Model('vehicle', {
-		'$manufacturer': String,
-		'$model': String,
-		'date_of_production': Number,
-		'colors': [String],
-		'wheels': [Number]
+		'$manufacturer': 'string',
+		'$model': 'string',
+		'date_of_production': 'number',
+		'colors': ['string | HexColor'],
+		'wheels': ['number | Int']
 	});
 
 	describe('Invalid models', function () {
 		it('No model name', function () {
 			expect(function () {
 				new Roose.Model({
-					'$name': String
+					'$name': 'string'
 				});
 			}).to.throw(/Model name unspecified/);
 		});
@@ -33,7 +32,7 @@ describe('Redis-oose tests:', function () {
 		it('No primary key', function () {
 			expect(function () {
 				new Roose.Model('test', {
-					'name': String
+					'name': 'string'
 				});
 			}).to.throw(/No primary key/);
 		});
@@ -41,9 +40,49 @@ describe('Redis-oose tests:', function () {
 		it('Invalid array definition', function () {
 			expect(function () {
 				new Roose.Model('test', {
-					'$colors': [String, String]
+					'$colors': ['string', 'string']
 				});
-			}).to.throw(/Invalid field length/);
+			}).to.throw(/Invalid array definition/);
+		});
+
+		it('Invalid type: 1', function () {
+			expect(function () {
+				new Roose.Model('test', {
+					'$id': String
+				});
+			}).to.throw(/Invalid type.*'id'/);
+		});
+
+		it('Invalid type: 2', function () {
+			expect(function () {
+				new Roose.Model('test', {
+					'$id': 'lorem_ipsum'
+				});
+			}).to.throw(/Invalid type.*'id'/);
+		});
+
+		it('Invalid type: 3', function () {
+			expect(function () {
+				new Roose.Model('test', {
+					'$id': 'string | Loremipsum'
+				});
+			}).to.throw(/Invalid type.*'id'/);
+		});
+	});
+
+	describe('Useful error messages', function () {
+		it('Invalid type in instance', function () {
+			expect(function () {
+				var Model = new Roose.Model('test', {
+					'$id': 'string',
+					'sizes': ['number']
+				});
+
+				var instance = Model.create({
+					'id': 'a',
+					'sizes': 'b'
+				});
+			}).to.throw(/Invalid.*key.*sizes/);
 		});
 	});
 
@@ -52,7 +91,7 @@ describe('Redis-oose tests:', function () {
 			'manufacturer': 'Tesla',
 			'model': 'Model S',
 			'date_of_production': new Date().getTime(),
-			'colors': ['red', 'green', 'blue'],
+			'colors': ['#ff0000', '#00ff00', '#0000ff'],
 			'wheels': [1, 2, 3, 4]
 		});
 
@@ -156,8 +195,8 @@ describe('Redis-oose tests:', function () {
 
 	describe('Array types', function () {
 		var Student = new Roose.Model('student', {
-			'$name': String,
-			'teachers': [String]
+			'$name': 'string',
+			'teachers': ['string']
 		});
 
 		var s1 = {
@@ -193,7 +232,5 @@ describe('Redis-oose tests:', function () {
 				expect(studentRead.teachers.sort()).to.deep.equal(s1.teachers.sort());
 			});
 		});
-
-
 	});
 });
