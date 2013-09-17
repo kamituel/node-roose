@@ -49,7 +49,7 @@ describe('Types validation', function () {
 
 		it('email - lowercase - type coersion', function () {
 			var Obj = function () {};
-			Obj.toString = function () { return "login@server.com"; };
+			Obj.toString = function () { return 'login@server.com'; };
 			expect(Types.validate('Email | Lowercase', Obj)).to.be.true;
 			expect(Types.validate('Email | Lowercase | string', Obj)).to.be.false;
 		});

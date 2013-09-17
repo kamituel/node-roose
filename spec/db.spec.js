@@ -23,7 +23,7 @@ describe('Redis-oose tests:', function () {
 	describe('Invalid models', function () {
 		it('No model name', function () {
 			expect(function () {
-				new Roose.Model({
+				var tmp = new Roose.Model({
 					'$name': 'string'
 				});
 			}).to.throw(/Model name unspecified/);
@@ -31,7 +31,7 @@ describe('Redis-oose tests:', function () {
 
 		it('No primary key', function () {
 			expect(function () {
-				new Roose.Model('test', {
+				var tmp = new Roose.Model('test', {
 					'name': 'string'
 				});
 			}).to.throw(/No primary key/);
@@ -39,7 +39,7 @@ describe('Redis-oose tests:', function () {
 
 		it('Invalid array definition', function () {
 			expect(function () {
-				new Roose.Model('test', {
+				var tmp = new Roose.Model('test', {
 					'$colors': ['string', 'string']
 				});
 			}).to.throw(/Invalid array definition/);
@@ -47,7 +47,7 @@ describe('Redis-oose tests:', function () {
 
 		it('Invalid type: 1', function () {
 			expect(function () {
-				new Roose.Model('test', {
+				var tmp = new Roose.Model('test', {
 					'$id': String
 				});
 			}).to.throw(/Invalid type.*'id'/);
@@ -55,7 +55,7 @@ describe('Redis-oose tests:', function () {
 
 		it('Invalid type: 2', function () {
 			expect(function () {
-				new Roose.Model('test', {
+				var tmp = new Roose.Model('test', {
 					'$id': 'lorem_ipsum'
 				});
 			}).to.throw(/Invalid type.*'id'/);
@@ -63,7 +63,7 @@ describe('Redis-oose tests:', function () {
 
 		it('Invalid type: 3', function () {
 			expect(function () {
-				new Roose.Model('test', {
+				var tmp = new Roose.Model('test', {
 					'$id': 'string | Loremipsum'
 				});
 			}).to.throw(/Invalid type.*'id'/);
