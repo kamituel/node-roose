@@ -86,6 +86,41 @@ describe('Redis-oose tests:', function () {
 		});
 	});
 
+	describe('No primitive type', function () {
+		var Model = null;
+		var instance = null;
+
+		it('Defines', function () {
+			Model = new Roose.Model('test', {
+				'$id': 'string',
+				'address': 'Url'
+			});
+		});
+
+		it('Creates', function () {
+			instance = Model.create({
+				'id': 'a',
+				'address': 'http://google.com'
+			});
+		});
+
+		it('Saves', function (done) {
+			instance.save().then(function () { done(); }).done();
+		});
+
+		it('Gets', function (done) {
+			Model.get({'id': instance.id})
+				.then(function (found) {
+					expect(found).to.not.be.null;
+					expect(found.id).to.equal(instance.id);
+					expect(found.address).to.equal(instance.address);
+
+					done();
+				})
+				.done();
+		});
+	});
+
 	describe('Simple add/del', function () {
 		var tesla = Vehicle.create({
 			'manufacturer': 'Tesla',
