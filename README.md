@@ -61,7 +61,7 @@ query.then(function (tesla) {
 }).done();
 ```
 
-whis translates into following Redis commands:
+which translates into following Redis commands:
 
 ```
 "MULTI"
@@ -76,17 +76,38 @@ whis translates into following Redis commands:
 Validation
 ----------
 
+Since Redis operates on strings only, so does Roose. But, for your convienience, we've provided
+so-called "data types". Data type is a set of validation rules defined for each field in a model. 
+When you create an new instance of a model, each field has to pass those validation rules.
+
 Roose uses Validator module (https://github.com/chriso/node-validator) for data validation. 
-Validator exposes methods like `isHexColor()` or `isUppercase()`. You can specify your fields 
-to pass multiple such rules by piping them (use `|` for this) and stripping the `is` part, for example: 
-`HexColor | Uppercase`.
+Validator exposes methods like `isHexColor()` or `isUppercase()`. Strip the `is` part and the rest
+forms the name of your rule. 
 
-Validator operates on strings only, even when performing numeric tests (like `isInt()`). Because of that,
-Roose exposes additional, primitive types: `number` and `string`. Those can be used to enforce
-the value being Javascript `Number` or `String` instances.
+You can specify your field to pass multiple such rules by "piping" them (use `|` for this). For instance:
+```
+'address': 'Url | Lowercase'
+```
+means that `address` should be an lower-case URL.
 
-For example:
+In addition to rules inherited from Validator, Roose defines two primitives: `string` and `number`.
+If you want to allow any value, use `string`. 
+If you include `number` in a validation rule, the value you pass will have to be a Javascript `Number`. 
 
+**Example**
+```javascript
+var Person = new Roose.Model({
+	'$name': 'string',
+	'age': 'number | Int',
+	'foot_length': 'Int'
+});
+```
+Correct values for:
+ - `name` - any string.
+ - `age` - any integer number, i.e. `5`, but not `"5"` (it's a string)
+ - `foot_length` - any integer number, i.e. `5` as well as `"5"`
+
+**Example**
 ```javascript
 var Client = new Roose.Model('client', {
 	'$id': 'number | Int',            // Javascript Number type which is an integer (i.e. not a float)
@@ -94,9 +115,9 @@ var Client = new Roose.Model('client', {
 });
 ```
 
-Correct `ip` values are: `5` (number), but not `"5"` (string) and not `5.1`.
-
-Correct `color` values are: `#FF00CC`, but not `#ff00cc` (lowercase).
+Correct values for:
+ - `ip` - `5` (number), but not `"5"` (string) and not `5.1`.
+ - `color` - `#FF00CC`, but not `#ff00cc` (lowercase).
 
 Tests
 -----
