@@ -70,6 +70,41 @@ describe('Redis-oose tests:', function () {
 		});
 	});
 
+	describe('Booleans', function () {
+		var Car, c;
+
+		it('Defines model', function () {
+			Car = new Roose.Model('car', {
+				'$id': 'number',
+				'broken': 'boolean',
+				'nice': 'boolean'
+			});
+		});
+
+		it('Saves', function (done) {
+			c = Car.create({
+				id: 1,
+				broken: true,
+				nice: false
+			});
+			c.save().then(function () {
+				done();
+			}).done();
+		});
+
+		it('Gets', function (done) {
+			Car.get({
+				id: c.id
+			}).then(function (car) {
+				expect(car.broken).to.be.a('boolean');
+				expect(car.id).to.equal(c.id);
+				expect(car.nice).to.be.a('boolean');
+				expect(car.nice).to.equal(c.nice);
+				done();
+			}).done();
+		});
+	});
+
 	describe('Useful error messages', function () {
 		it('Invalid type in instance', function () {
 			expect(function () {

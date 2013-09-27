@@ -26,6 +26,15 @@ describe('Types validation', function () {
 			expect(Types.validate('string', true)).to.be.false;
 			expect(Types.validate('string', '[]')).to.be.true;
 		});
+
+		it('booleans', function () {
+			expect(Types.validate('boolean', [])).to.be.false;
+			expect(Types.validate('boolean', {})).to.be.false;
+			expect(Types.validate('boolean', 's')).to.be.false;
+			expect(Types.validate('boolean', 1)).to.be.false;
+			expect(Types.validate('boolean', true)).to.be.true;
+			expect(Types.validate('boolean', false)).to.be.true;
+		});
 	});
 
 	describe('Validator types', function () {
