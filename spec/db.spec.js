@@ -70,6 +70,39 @@ describe('Redis-oose tests:', function () {
 		});
 	});
 
+	describe('Field value changed after object creation, then error', function () {
+		var Car = new Roose.Model('car', {
+			'$id': 'number'
+		});
+
+		var car = Car.create({
+			'id': 7
+		});
+
+		it('Saves', function (done) {
+			car.save()
+				.then(function () {
+					done();
+				})
+				.done();
+		});
+
+		it('Error on invalid value', function (done) {
+			car.id = '7';
+			var error = null;
+
+			car.save().then(function () {
+			}).fail(function (err) {
+				error = err;
+			}).fin(function () {
+				expect(error).to.not.be.null;
+				expect(error.message).to.match(/invalid.*'id'.*'car'/i);
+				done();
+			})
+			.done();
+		});
+	});
+
 	describe('Booleans', function () {
 		var Car, c;
 
