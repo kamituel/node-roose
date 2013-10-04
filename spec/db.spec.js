@@ -336,4 +336,57 @@ describe('Redis-oose tests:', function () {
 			});
 		});
 	});
+
+	describe('Validation rules', function () {
+		it('notEmpty rule applied', function () {
+			expect(function () {
+				var M = new Roose.Model('m', {
+					'$id': 'string',
+					'name': 'string | notEmpty'
+				});
+
+				M.create({
+					'id': 'lorem',
+					'name': ''
+				});
+			}).to.throw(/Invalid.*'name'/);
+		});
+
+		it('Regex rule - invalid rule', function () {
+			expect(function () {
+				var M = new Roose.Model('m', {
+					'$id': 'string',
+					'name': 'string | /*/'
+				});
+			}).to.throw(/Invalid.*'name'/);			
+		});
+
+		it('Regex rule - invalid value', function () {
+			expect(function () {
+				var M = new Roose.Model('m', {
+					'$id': 'string',
+					'name': 'string | /\\w{3}/'
+				});
+
+				M.create({
+					'id': 'lorem',
+					'name': 'ab'
+				});
+			}).to.throw(/Invalid.*'name'/);
+		});
+
+		it('Regex rule - valid value', function () {
+			var M = new Roose.Model('m', {
+				'$id': 'string',
+				'name': 'string | /\\w{3}/'
+			});
+
+			var m = M.create({
+				'id': 'lorem',
+				'name': 'abc'
+			});
+
+			expect(m.name).to.equal('abc');
+		});
+	});
 });

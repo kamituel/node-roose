@@ -69,5 +69,25 @@ describe('Types validation', function () {
 			expect(Types.validate('Float | number', '5.5')).to.be.false;
 			expect(Types.validate('Float | number', 5.5)).to.be.true;
 		});
+
+		it('notEmpty', function () {
+			expect(Types.validate('notEmpty', '')).to.be.false;
+			expect(Types.validate('notEmpty', 'lorem ipsum')).to.be.true;
+			expect(Types.validate('notEmpty', ['lorem ipsum'])).to.be.true;
+			expect(Types.validate('string | notEmpty', ['lorem ipsum'])).to.be.false;
+			expect(Types.validate('notEmpty', 7)).to.be.true;
+		});
+	});
+
+	describe('Regexes', function () {
+		it('Validates', function () {
+			expect(Types.validate('/id\\d+/', 'id77')).to.be.true;
+		});
+
+		it('Invalid regex', function () {
+			expect(function () {
+				Types.validate('/*/', 'id77');
+			}).to.throw;
+		});
 	});
 });
