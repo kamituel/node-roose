@@ -389,4 +389,16 @@ describe('Redis-oose tests:', function () {
 			expect(m.name).to.equal('abc');
 		});
 	});
+
+	describe('Model - helper functions', function () {
+		it('spec', function () {
+			var M = new Roose.Model('m', {
+				'$id': 'string | notEmpty',
+				'name': 'string | Uppercase | /a{3}/'
+			});
+
+			expect(M.spec('id')).to.equal('string | notEmpty');
+			expect(M.spec('name')).to.equal('string | Uppercase | /a{3}/');
+		});
+	});
 });
