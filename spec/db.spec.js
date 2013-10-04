@@ -329,7 +329,6 @@ describe('Redis-oose tests:', function () {
 				expect(studentSaved.teachers.sort()).to.equal(s1.teachers.sort());
 
 				var studentRead = yield Student.get({name: 'Jorge Luis Borges'});
-				console.log(s1, studentRead);
 				expect(studentRead).to.not.be.null;
 				expect(studentRead.name).to.equal(s1.name);
 				expect(studentRead.teachers.sort()).to.deep.equal(s1.teachers.sort());
@@ -388,10 +387,18 @@ describe('Redis-oose tests:', function () {
 
 			expect(m.name).to.equal('abc');
 		});
+
+		it('Regex uses "|"', function () {
+			expect(function () {
+				var M = new Roose.Model('m', {
+					'$id': 'string | /^a|b$/'
+				});
+			}).to.not.throw();
+		});
 	});
 
 	describe('Model - helper functions', function () {
-		it('spec', function () {
+		it('spec()', function () {
 			var M = new Roose.Model('m', {
 				'$id': 'string | notEmpty',
 				'name': 'string | Uppercase | /a{3}/'
