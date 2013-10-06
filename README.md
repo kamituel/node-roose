@@ -80,9 +80,10 @@ Since Redis operates on strings only, so does Roose. But, for your convienience,
 so-called "data types". Data type is a set of validation rules defined for each field in a model. 
 When you create an new instance of a model, each field has to pass those validation rules.
 
+**Validator**
 Roose uses Validator module (https://github.com/chriso/node-validator) for data validation. 
 Validator exposes methods like `isHexColor()` or `isUppercase()`. Strip the `is` part and the rest
-forms the name of your rule. 
+forms the name of your rule. For methods without `is` part, like `notEmpty()`, use them as they are.
 
 You can specify your field to pass multiple such rules by "piping" them (use `|` for this). For instance:
 ```
@@ -90,34 +91,39 @@ You can specify your field to pass multiple such rules by "piping" them (use `|`
 ```
 means that `address` should be an lower-case URL.
 
-In addition to rules inherited from Validator, Roose defines two primitives: `string` and `number`.
-If you want to allow any value, use `string`. 
-If you include `number` in a validation rule, the value you pass will have to be a Javascript `Number`. 
+**Primitive types**
+In addition to rules inherited from Validator, Roose defines primitives: `string`, `number` and `boolean`.
+Those keys will be coerced when reading from Redis.
 
-**Example**
+**Regular expressions**
+Beside primitive types and Validator rules, you can specify format by regular expression - in a string format.
+
+**Examples**
 ```javascript
-var Person = new Roose.Model({
-	'$name': 'string',
+var Student = new Roose.Model({
+	'$name': 'string | /^\S+ .+$/',
 	'age': 'number | Int',
-	'foot_length': 'Int'
+	'sex': '/^male|female$/',
+	'grades': ['Int']
 });
 ```
 Correct values for:
- - `name` - any string.
+ - `name` - any string matching given regex.
  - `age` - any integer number, i.e. `5`, but not `"5"` (it's a string)
- - `foot_length` - any integer number, i.e. `5` as well as `"5"`
+ - `sex` - either `male` or `female`.
+ - `grades` - array of numbers, i.e. `[5, "5"]` - string values are allowed, because `number` rules is not used.
 
-**Example**
 ```javascript
 var Client = new Roose.Model('client', {
-	'$id': 'number | Int',            // Javascript Number type which is an integer (i.e. not a float)
-	'color': 'HexColor | Uppercase'   // String which is a hex color written in uppercase.
+	'$id': 'number | Int',
+	'color': 'HexColor | Uppercase'
 });
 ```
 
 Correct values for:
  - `ip` - `5` (number), but not `"5"` (string) and not `5.1`.
  - `color` - `#FF00CC`, but not `#ff00cc` (lowercase).
+
 
 Tests
 -----
